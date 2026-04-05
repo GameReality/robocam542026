@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Robot Configuration"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- General Info -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Robot Name (e.g. EV3 Researcher)"/>
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:layout_marginTop="8dp"/>
+
+        <!-- User Program -->
+        <CheckBox
+            android:id="@+id/cbStartUserProgram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start User Program"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etUserProgram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Program Path (e.g. ../prjs/...)"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Joysticks Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joysticks"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/containerJoysticks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnAddJoystick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Joystick"
+            android:layout_marginTop="8dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- KeyGroups Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keyboard Groups"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/containerKeyGroups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnAddKeyGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Key Group"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnSaveConfig"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="SAVE CONFIGURATION"
+            android:layout_marginTop="32dp"/>
+
+    </LinearLayout>
+</ScrollView>

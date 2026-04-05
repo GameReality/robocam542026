@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="#E8EAF6"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mailbox: "/>
+        <EditText
+            android:id="@+id/etMailbox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="mailbox_name"/>
+        <CheckBox
+            android:id="@+id/cbKgActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active"
+            android:checked="true"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speeds (Inc/Dec X/Y):"
+        android:layout_marginTop="4dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText android:id="@+id/etIncX" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="IncX" android:inputType="number" android:text="15"/>
+        <EditText android:id="@+id/etIncY" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="IncY" android:inputType="number" android:text="15"/>
+        <EditText android:id="@+id/etDecX" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="DecX" android:inputType="number" android:text="50"/>
+        <EditText android:id="@+id/etDecY" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="DecY" android:inputType="number" android:text="50"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Key Bindings (Tap to remap - placeholder):"
+        android:layout_marginTop="8dp"/>
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="2">
+        <Button android:id="@+id/btnKeyUp" android:layout_width="60dp" android:layout_height="wrap_content" android:text="Up" android:textSize="10sp"/>
+        <Button android:id="@+id/btnKeyDown" android:layout_width="60dp" android:layout_height="wrap_content" android:text="Down" android:textSize="10sp"/>
+        <Button android:id="@+id/btnKeyLeft" android:layout_width="60dp" android:layout_height="wrap_content" android:text="Left" android:textSize="10sp"/>
+        <Button android:id="@+id/btnKeyRight" android:layout_width="60dp" android:layout_height="wrap_content" android:text="Right" android:textSize="10sp"/>
+    </GridLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Output Ports:"
+        android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox android:id="@+id/cbPortA" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="A"/>
+        <CheckBox android:id="@+id/cbPortB" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="B"/>
+        <CheckBox android:id="@+id/cbPortC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="C"/>
+        <CheckBox android:id="@+id/cbPortD" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="D"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRemoveKeyGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove"
+        android:backgroundTint="#FF5722"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="right"/>
+</LinearLayout>

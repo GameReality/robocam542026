@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="#F5F5F5"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joystick Index: "/>
+        <EditText
+            android:id="@+id/etJoyIndex"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="0"/>
+        <CheckBox
+            android:id="@+id/cbJoyVisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visible"
+            android:checked="true"
+            android:layout_marginLeft="16dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shape: "/>
+        <Spinner
+            android:id="@+id/spJoyShape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/joystick_shapes"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type: "
+            android:layout_marginLeft="16dp"/>
+        <EditText
+            android:id="@+id/etJoyType"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="2"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Output Ports:"
+        android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox android:id="@+id/cbPortA" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="A"/>
+        <CheckBox android:id="@+id/cbPortB" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="B"/>
+        <CheckBox android:id="@+id/cbPortC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="C"/>
+        <CheckBox android:id="@+id/cbPortD" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="D"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRemoveJoystick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove"
+        android:backgroundTint="#FF5722"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="right"/>
+</LinearLayout>

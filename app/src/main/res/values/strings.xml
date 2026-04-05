@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">RoboCam</string>
+    <string name="start_server">Start Server</string>
+    <string name="stop_server">Stop Server</string>
+    <string name="server_stopped">Server stopped</string>
+    <string name="server_running_at">Server running at: </string>
+    <string name="ev3_settings_title">EV3 Motor Mappings</string>
+    <string name="server_settings_title">Server Settings</string>
+    <string name="robot_configs_title">Robot Configurations</string>
+    <string name="global_settings_title">Global Settings</string>
+    <string name="import_export_title">Import/Export Config</string>
+    <string name="local_controllers_title">Local Controllers</string>
+
+    <string-array name="joystick_shapes">
+        <item>Circle (c)</item>
+        <item>Arrow (a)</item>
+    </string-array>
+</resources>

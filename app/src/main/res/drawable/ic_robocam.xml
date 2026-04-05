@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Left Wheel -->
+    <path
+        android:fillColor="#444444"
+        android:pathData="M10,55 h20 v40 h-20 z" />
+    <path
+        android:strokeColor="#666666"
+        android:strokeWidth="1"
+        android:pathData="M10,65 h20 M10,75 h20 M10,85 h20 M15,55 v40 M25,55 v40" />
+
+    <!-- Right Wheel -->
+    <path
+        android:fillColor="#444444"
+        android:pathData="M70,55 h20 v40 h-20 z" />
+    <path
+        android:strokeColor="#666666"
+        android:strokeWidth="1"
+        android:pathData="M70,65 h20 M70,75 h20 M70,85 h20 M75,55 v40 M85,55 v40" />
+
+    <!-- Body -->
+    <path
+        android:fillColor="#CCCCCC"
+        android:strokeColor="#888888"
+        android:strokeWidth="1"
+        android:pathData="M35,10 h30 a5,5 0 0 1 5,5 v60 a5,5 0 0 1 -5,5 h-30 a5,5 0 0 1 -5,-5 v-60 a5,5 0 0 1 5,-5 z" />
+
+    <!-- Camera Lens -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M50,25 m-8,0 a8,8 0 1,1 16,0 a8,8 0 1,1 -16,0" />
+</vector>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RoboCam Controller</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; color: #fff;
+            overflow: hidden; font-family: sans-serif;
+            user-select: none; -webkit-user-select: none;
+        }
+        #stream {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; z-index: 0;
+        }
+        .joystick-container {
+            position: absolute; width: 150px; height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; z-index: 10;
+        }
+        .joystick-handle {
+            position: absolute; width: 60px; height: 60px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%; top: 45px; left: 45px;
+        }
+        #joy0 { top: 20px; left: 20px; }
+        #joy1 { top: 20px; right: 20px; }
+        #joy2 { bottom: 20px; left: 20px; }
+        #joy3 { bottom: 20px; right: 20px; }
+
+        #fullscreen-btn {
+            position: absolute; top: 50%; right: 10px;
+            transform: translateY(-50%);
+            padding: 10px; background: rgba(0,0,0,0.5);
+            border: 1px solid #fff; color: #fff;
+            z-index: 20; cursor: pointer;
+        }
+        #status-indicator {
+            position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 15px; height: 15px;
+            border-radius: 50%; background: red;
+            z-index: 30;
+        }
+    </style>
+</head>
+<body>
+    <div id="status-indicator"></div>
+    <img id="stream" src="" alt="Camera Stream" onerror="setTimeout(() => { this.src = this.src; }, 2000)">
+
+    <div id="joy0" class="joystick-container"><div class="joystick-handle"></div></div>
+    <div id="joy1" class="joystick-container"><div class="joystick-handle"></div></div>
+    <div id="joy2" class="joystick-container"><div class="joystick-handle"></div></div>
+    <div id="joy3" class="joystick-container"><div class="joystick-handle"></div></div>
+
+    <button id="fullscreen-btn">FS</button>
+
+    <script>
+        const serverBase = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+        document.getElementById('stream').src = serverBase + '/cam';
+
+        const statusEl = document.getElementById('status-indicator');
+        const joysticks = [
+            { id: 0, el: document.getElementById('joy0'), handle: document.querySelector('#joy0 .joystick-handle'), x: 0, y: 0, touchId: null },
+            { id: 1, el: document.getElementById('joy1'), handle: document.querySelector('#joy1 .joystick-handle'), x: 0, y: 0, touchId: null },
+            { id: 2, el: document.getElementById('joy2'), handle: document.querySelector('#joy2 .joystick-handle'), x: 0, y: 0, touchId: null },
+            { id: 3, el: document.getElementById('joy3'), handle: document.querySelector('#joy3 .joystick-handle'), x: 0, y: 0, touchId: null }
+        ];
+
+        const activeKeys = new Set();
+        const JOYSTICK_RADIUS = 75;
+        const HANDLE_RADIUS = 30;
+
+        function updateJoystickPosition(joy, clientX, clientY) {
+            const rect = joy.el.getBoundingClientRect();
+            const centerX = rect.left + JOYSTICK_RADIUS;
+            const centerY = rect.top + JOYSTICK_RADIUS;
+
+            let dx = clientX - centerX;
+            let dy = clientY - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > JOYSTICK_RADIUS) {
+                dx = (dx / distance) * JOYSTICK_RADIUS;
+                dy = (dy / distance) * JOYSTICK_RADIUS;
+            }
+
+            joy.x = dx / JOYSTICK_RADIUS;
+            joy.y = -dy / JOYSTICK_RADIUS;
+            joy.handle.style.transform = `translate(${dx}px, ${dy}px)`;
+        }
+
+        function resetJoystick(joy) {
+            joy.x = 0; joy.y = 0; joy.touchId = null;
+            joy.handle.style.transform = 'translate(0px, 0px)';
+            sendJoystickUpdate(joy);
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touches = e.changedTouches;
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                if (e.type === 'touchstart') {
+                    for (const joy of joysticks) {
+                        const rect = joy.el.getBoundingClientRect();
+                        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                            touch.clientY >= rect.top && touch.clientY <= rect.bottom && joy.touchId === null) {
+                            joy.touchId = touch.identifier;
+                            updateJoystickPosition(joy, touch.clientX, touch.clientY);
+                            break;
+                        }
+                    }
+                } else if (e.type === 'touchmove') {
+                    for (const joy of joysticks) {
+                        if (joy.touchId === touch.identifier) updateJoystickPosition(joy, touch.clientX, touch.clientY);
+                    }
+                } else if (e.type === 'touchend' || e.type === 'touchcancel') {
+                    for (const joy of joysticks) {
+                        if (joy.touchId === touch.identifier) resetJoystick(joy);
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('touchstart', handleTouch, { passive: false });
+        document.addEventListener('touchmove', handleTouch, { passive: false });
+        document.addEventListener('touchend', handleTouch, { passive: false });
+        document.addEventListener('touchcancel', handleTouch, { passive: false });
+
+        document.addEventListener('keydown', (e) => {
+            const keys = [38, 40, 37, 39, 87, 83, 65, 68];
+            if (keys.includes(e.keyCode)) { activeKeys.add(e.keyCode); sendKeyUpdate(); }
+        });
+        document.addEventListener('keyup', (e) => { activeKeys.delete(e.keyCode); sendKeyUpdate(); });
+
+        function sendKeyUpdate() {
+            const data = { keys: Array.from(activeKeys), x: 0, y: 0 };
+            if (activeKeys.has(87) || activeKeys.has(38)) data.y = 15;
+            if (activeKeys.has(83) || activeKeys.has(40)) data.y = -15;
+            if (activeKeys.has(68) || activeKeys.has(39)) data.x = 15;
+            if (activeKeys.has(65) || activeKeys.has(37)) data.x = -15;
+            postData('/keys', data);
+        }
+
+        function sendJoystickUpdate(joy) {
+            postData('/joystick', { index: joy.id, x: joy.x, y: joy.y });
+        }
+
+        function postData(url, data) {
+            fetch(serverBase + url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) statusEl.style.background = 'green';
+                else statusEl.style.background = 'red';
+            }).catch(() => { statusEl.style.background = 'red'; });
+        }
+
+        setInterval(() => {
+            joysticks.forEach(joy => {
+                if (joy.touchId !== null) sendJoystickUpdate(joy);
+            });
+        }, 50);
+
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        });
+    </script>
+</body>
+</html>
