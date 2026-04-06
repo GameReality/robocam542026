@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RoboCam</string>
+    <string name="app_name">App</string>
     <string name="start_server">Start Server</string>
     <string name="stop_server">Stop Server</string>
     <string name="server_stopped">Server stopped</string>

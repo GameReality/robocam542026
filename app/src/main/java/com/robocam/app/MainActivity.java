@@ -456,20 +456,28 @@ public class MainActivity extends AppCompatActivity {
 
             if (isRunning) {
                 tvTopStatus.setText(String.format("RoboCam server is working:\nhttp://%s:%d", ip, port));
-                setBoxStroke(tvTopStatus, Color.parseColor("#4CAF50"));
-                btnStartStop.setBackgroundResource(R.drawable.bg_circle_dark_gray);
+                tvTopStatus.setBackgroundResource(R.drawable.status_box_green);
+                btnStartStop.setBackgroundResource(R.drawable.bg_circle_green);
+                btnStartStop.setColorFilter(Color.parseColor("#4CAF50")); // Green icon
             } else {
                 tvTopStatus.setText("RoboCam server is off");
-                setBoxStroke(tvTopStatus, Color.parseColor("#F44336"));
+                tvTopStatus.setBackgroundResource(R.drawable.status_box_green);
                 btnStartStop.setBackgroundResource(R.drawable.bg_circle_green);
+                btnStartStop.setColorFilter(Color.parseColor("#4CAF50")); // Green icon
             }
+
+            // Bottom Status Box (Simulating the text from the image)
+            // In a real scenario, this would check if EV3 is actually connected
+            tvBottomStatus.setText("EV3 is not connected:\nEV3 Researcher");
+            btnRobotSelect.setColorFilter(Color.parseColor("#E91E8C")); // Magenta icon
+            btnSettings.setColorFilter(Color.WHITE); // White icon for gray button
         });
     }
 
     private void setBoxStroke(View v, int color) {
-        GradientDrawable gd = (GradientDrawable) v.getBackground();
-        if (gd != null) {
-            gd.setStroke(dpToPx(3), color);
+        android.graphics.drawable.Drawable background = v.getBackground();
+        if (background instanceof GradientDrawable) {
+            ((GradientDrawable) background).setStroke(dpToPx(3), color);
         }
     }
 

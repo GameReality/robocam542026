@@ -20,20 +20,33 @@
             android:id="@+id/tvTopStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/status_box_red"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="150dp"
+            android:layout_marginEnd="48dp"
+            android:background="@drawable/status_box_green"
             android:gravity="center"
-            android:padding="8dp"
-            android:text="RoboCam server is off"
-            android:textColor="#000000"
-            android:textSize="16sp"
+            android:padding="12dp"
+            android:text="Сервер RoboCam выключен"
+            android:textColor="#333333"
+            android:textSize="18sp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Vertical Line Top -->
+        <View
+            android:id="@+id/lineTop"
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:background="#4CAF50"
+            app:layout_constraintEnd_toEndOf="@+id/btnStartStop"
+            app:layout_constraintStart_toStartOf="@+id/btnStartStop"
+            app:layout_constraintTop_toBottomOf="@+id/tvTopStatus" />
+
         <!-- Middle Buttons -->
         <LinearLayout
+            android:id="@+id/buttonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -44,40 +57,58 @@
 
             <ImageButton
                 android:id="@+id/btnStartStop"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:background="@drawable/bg_circle_green"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_power" />
 
             <ImageButton
                 android:id="@+id/btnRobotSelect"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_circle_magenta"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_robot" />
 
             <ImageButton
                 android:id="@+id/btnSettings"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:background="@drawable/bg_circle_gray"
+                android:padding="25dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_menu" />
         </LinearLayout>
+
+        <!-- Vertical Line Bottom -->
+        <View
+            android:id="@+id/lineBottom"
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:background="#E91E8C"
+            app:layout_constraintBottom_toTopOf="@+id/tvBottomStatus"
+            app:layout_constraintEnd_toEndOf="@+id/btnRobotSelect"
+            app:layout_constraintStart_toStartOf="@+id/btnRobotSelect" />
 
         <!-- Bottom Status Box -->
         <TextView
             android:id="@+id/tvBottomStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/status_box_gray"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="150dp"
+            android:background="@drawable/status_box_magenta"
             android:gravity="center"
-            android:padding="8dp"
-            android:text="Bluetooth: not connected"
-            android:textColor="#000000"
-            android:textSize="16sp"
+            android:padding="12dp"
+            android:text="EV3 не подключен:\nИсследователь EV3"
+            android:textColor="#333333"
+            android:textSize="18sp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
