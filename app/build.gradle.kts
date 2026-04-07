@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "com.robocam.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.robocam.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
 
         multiDexEnabled = true
 
@@ -40,10 +40,6 @@ android {
         }
     }
     
-    // For 16KB page size support
-    androidResources {
-        generateLocaleConfig = true
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
