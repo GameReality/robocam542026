@@ -69,8 +69,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
 
     // Ktor
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.cio)
+
 
     // Others
     implementation("com.google.android.gms:play-services-ads:25.1.0")
