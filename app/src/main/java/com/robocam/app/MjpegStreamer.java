@@ -1,43 +1,57 @@
 package com.robocam.app;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
-import android.view.Surface;
 
-import java.io.IOException;
-import java.io.PipedOutputStream;
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * One shared "frame slot" holds the latest JPEG + a sequence number.
+ * Camera callback writes in and calls notifyAll(). Each HTTP streaming
+ * thread calls waitForNextFrame() and blocks until a newer frame arrives.
+ * Camera thread never blocks regardless of client count or speed.
+ */
 public class MjpegStreamer {
-    private static final String TAG = "MjpegStreamer";
-    private final Context context;
-    private ImageReader imageReader;
-    private HandlerThread backgroundThread;
-    private Handler backgroundHandler;
 
-    private final CopyOnWriteArrayList<PipedOutputStream> outputStreams = new CopyOnWriteArrayList<>();
+    private static final int WIDTH  = 640;
+    private static final int HEIGHT = 480;
+
+    private ImageReader   imageReader;
+    private HandlerThread backgroundThread;
+    private Handler       backgroundHandler;
+
+    private final Object frameLock   = new Object();
+    private byte[]       latestFrame = null;
+    private int          frameSeq    = 0;
+    private volatile boolean stopped = false;
+
+    public static final class FrameResult {
+        public final byte[] data;
+        public final int    seq;
+        FrameResult(byte[] data, int seq) { this.data = data; this.seq = seq; }
+    }
 
     public MjpegStreamer(Context context) {
-        this.context = context;
-        // Create ImageReader with 640x480 format JPEG
-        imageReader = ImageReader.newInstance(640, 480, ImageFormat.JPEG, 2);
+        imageReader = ImageReader.newInstance(WIDTH, HEIGHT, ImageFormat.JPEG, 2);
         startBackgroundThread();
         imageReader.setOnImageAvailableListener(reader -> {
             Image image = reader.acquireLatestImage();
-            if (image != null) {
+            if (image == null) return;
+            try {
                 ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                 byte[] jpegBytes = new byte[buffer.remaining()];
                 buffer.get(jpegBytes);
+                synchronized (frameLock) {
+                    latestFrame = jpegBytes;
+                    frameSeq++;
+                    frameLock.notifyAll();
+                }
+            } finally {
                 image.close();
-                writeFrame(jpegBytes);
             }
         }, backgroundHandler);
     }
@@ -46,19 +60,29 @@ public class MjpegStreamer {
         return imageReader;
     }
 
-    public void addOutputStream(PipedOutputStream stream) {
-        outputStreams.add(stream);
-    }
-
-    public void removeOutputStream(PipedOutputStream stream) {
-        outputStreams.remove(stream);
-        try { stream.close(); } catch (IOException ignored) {}
-    }
-
-    public void start() {
+    /**
+     * Blocks until a frame newer than lastSeq is available, timeout, or stop.
+     * Pass lastSeq=0 to get the very next frame.
+     */
+    public FrameResult waitForNextFrame(int lastSeq, long timeoutMs)
+            throws InterruptedException {
+        synchronized (frameLock) {
+            long deadline = System.currentTimeMillis() + timeoutMs;
+            while (!stopped && (latestFrame == null || frameSeq == lastSeq)) {
+                long remaining = deadline - System.currentTimeMillis();
+                if (remaining <= 0) return null;
+                frameLock.wait(remaining);
+            }
+            if (stopped) return null;
+            return new FrameResult(latestFrame, frameSeq);
+        }
     }
 
     public void stop() {
+        stopped = true;
+        synchronized (frameLock) {
+            frameLock.notifyAll();
+        }
         if (imageReader != null) {
             imageReader.close();
             imageReader = null;
@@ -67,49 +91,19 @@ public class MjpegStreamer {
     }
 
     private void startBackgroundThread() {
-        if (backgroundThread == null) {
-            backgroundThread = new HandlerThread("MjpegStreamer");
-            backgroundThread.start();
-            backgroundHandler = new Handler(backgroundThread.getLooper());
-        }
+        backgroundThread = new HandlerThread("MjpegStreamer");
+        backgroundThread.start();
+        backgroundHandler = new Handler(backgroundThread.getLooper());
     }
 
     private void stopBackgroundThread() {
         if (backgroundThread != null) {
             backgroundThread.quitSafely();
-            try {
-                backgroundThread.join();
-                backgroundThread = null;
-                backgroundHandler = null;
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Interrupted while stopping background thread", e);
+            try { backgroundThread.join(); } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        }
-    }
-
-    private void writeFrame(byte[] jpegBytes) {
-        if (outputStreams.isEmpty()) return;
-
-        String header = "--frame\r\n" +
-                "Content-Type: image/jpeg\r\n" +
-                "Content-Length: " + jpegBytes.length + "\r\n\r\n";
-        byte[] headerBytes;
-        try {
-            headerBytes = header.getBytes("UTF-8");
-        } catch (Exception e) {
-            return;
-        }
-
-        for (PipedOutputStream out : outputStreams) {
-            try {
-                out.write(headerBytes);
-                out.write(jpegBytes);
-                out.write("\r\n".getBytes("UTF-8"));
-                out.flush();
-            } catch (IOException e) {
-                // Client disconnected - remove this stream
-                removeOutputStream(out);
-            }
+            backgroundThread = null;
+            backgroundHandler = null;
         }
     }
 }
