@@ -68,7 +68,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
-    // Ktor
+    
 
 
     // Others
